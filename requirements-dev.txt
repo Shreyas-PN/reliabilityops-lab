@@ -2,3 +2,6 @@ ruff==0.13.0
 pytest==8.4.1
 httpx==0.28.1
 -r services/api/requirements.txt
+-r services/api/requirements.txt
+-r services/worker/requirements.txt
+-r services/remediator/requirements.txt
