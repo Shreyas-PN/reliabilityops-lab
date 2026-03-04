@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: reliabilityops
+    orgId: 1
+    folder: ReliabilityOps
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards

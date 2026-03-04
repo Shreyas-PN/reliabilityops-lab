@@ -19,8 +19,24 @@ Local monorepo that simulates a small SRE/DevOps platform:
    ```
 4. Verify:
    - API: `http://localhost:8000/healthz`
+   - API ready: `http://localhost:8000/readyz`
    - Remediator: `http://localhost:8002/healthz`
    - RabbitMQ UI: `http://localhost:15672` (`guest/guest`)
+   - Prometheus: `http://localhost:9090`
+   - Grafana: `http://localhost:3000` (`admin/admin`)
+
+## How to run (observability)
+
+```bash
+docker compose up --build -d
+curl -s http://localhost:8000/healthz > /dev/null
+curl -s http://localhost:8000/readyz > /dev/null
+```
+
+URLs and credentials:
+- API: `http://localhost:8000` (`/healthz`, `/readyz`, `/metrics`)
+- Prometheus: `http://localhost:9090` (target `api` should be UP)
+- Grafana: `http://localhost:3000` (username `admin`, password `admin`)
 
 ## Kubernetes (kind)
 
