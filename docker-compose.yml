@@ -1,0 +1,60 @@
+services:
+  api:
+    build:
+      context: ./services/api
+    environment:
+      APP_NAME: reliabilityops-api
+      DB_DSN: postgresql://postgres:postgres@postgres:5432/reliabilityops
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/reliabilityops
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+
+  worker:
+    build:
+      context: ./services/worker
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      REDIS_HOST: redis
+      QUEUE_NAME: alerts
+    depends_on:
+      - redis
+      - rabbitmq
+
+  remediator:
+    build:
+      context: ./services/remediator
+    environment:
+      APP_NAME: reliabilityops-remediator
+    ports:
+      - "8002:8002"
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: reliabilityops
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+volumes:
+  pg_data:

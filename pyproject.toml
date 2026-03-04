@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["infra/terraform"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = []
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = [
+  "services/api/tests",
+  "services/worker/tests",
+  "services/remediator/tests",
+]

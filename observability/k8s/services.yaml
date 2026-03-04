@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: reliabilityops
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 8000
+      targetPort: 8000
+      nodePort: 30080
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remediator
+  namespace: reliabilityops
+spec:
+  selector:
+    app: remediator
+  ports:
+    - port: 8002
+      targetPort: 8002
+      nodePort: 30082
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: reliabilityops
+spec:
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: reliabilityops
+spec:
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: reliabilityops
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+    - name: mgmt
+      port: 15672
+      targetPort: 15672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker
+  namespace: reliabilityops
+spec:
+  selector:
+    app: worker
+  ports:
+    - port: 9000
+      targetPort: 9000

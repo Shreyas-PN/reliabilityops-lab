@@ -1,0 +1,144 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: reliabilityops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: reliabilityops-lab/api:dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_NAME
+              value: reliabilityops-api
+          ports:
+            - containerPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: reliabilityops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: reliabilityops-lab/worker:dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RABBITMQ_HOST
+              value: rabbitmq
+            - name: REDIS_HOST
+              value: redis
+            - name: QUEUE_NAME
+              value: alerts
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remediator
+  namespace: reliabilityops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: remediator
+  template:
+    metadata:
+      labels:
+        app: remediator
+    spec:
+      containers:
+        - name: remediator
+          image: reliabilityops-lab/remediator:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: reliabilityops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: reliabilityops
+          ports:
+            - containerPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: reliabilityops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: reliabilityops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3.13-management-alpine
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
