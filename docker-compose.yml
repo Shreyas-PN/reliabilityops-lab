@@ -61,7 +61,7 @@ services:
       - "15672:15672"
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.53.1
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
@@ -78,6 +78,7 @@ services:
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
     volumes:
       - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
