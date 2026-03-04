@@ -1,8 +1,3 @@
-from fastapi import FastAPI, HTTPException, Request
-from pydantic import BaseModel
-
-from starlette.responses import Response
-
 import json
 import os
 import time
@@ -10,7 +5,10 @@ from typing import Any
 
 import pika
 import psycopg
+from fastapi import FastAPI, HTTPException, Request
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
+from pydantic import BaseModel
+from starlette.responses import Response
 
 app = FastAPI(title="reliabilityops-api")
 
@@ -75,7 +73,7 @@ def readyz() -> dict[str, Any]:
                 cur.execute("SELECT 1;")
                 cur.fetchone()
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Postgres not ready: {e}")
+        raise HTTPException(status_code=503, detail=f"Postgres not ready: {e}") from e
 
     # Check RabbitMQ connectivity
     try:
@@ -84,7 +82,7 @@ def readyz() -> dict[str, Any]:
         conn = pika.BlockingConnection(params)
         conn.close()
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"RabbitMQ not ready: {e}")
+        raise HTTPException(status_code=503, detail=f"RabbitMQ not ready: {e}") from e
 
     return {"status": "ok", "dependencies": {"postgres": "ok", "rabbitmq": "ok"}}
 
@@ -119,7 +117,7 @@ def create_task(task: TaskIn) -> dict[str, Any]:
         )
         connection.close()
     except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Failed to publish task: {e}")
+        raise HTTPException(status_code=503, detail=f"Failed to publish task: {e}") from e
 
     return {"status": "accepted", "queue": queue_name, "task_id": task.task_id}
 
